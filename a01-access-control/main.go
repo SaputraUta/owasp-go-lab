@@ -17,6 +17,8 @@ func main() {
 		fmt.Fprintf(w, "you are %s\n", currentUser(r))
 	}))
 
+	mux.HandleFunc("GET /invoices/{id}", requireAuth(getInvoice))
+
 	log.Println("listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", mux))
 }
