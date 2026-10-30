@@ -19,7 +19,7 @@ var invoices = map[string]Invoice{
 
 func getInvoice(w http.ResponseWriter, r *http.Request) {
 	inv, ok := invoices[r.PathValue("id")]
-	if !ok {
+	if !ok || inv.Owner != currentUser(r) {
 		http.Error(w, "not found", http.StatusNotFound)
 		return
 	}
