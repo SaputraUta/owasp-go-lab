@@ -19,7 +19,7 @@ func requireAuth(next http.HandlerFunc) http.HandlerFunc {
 		user, ok := tokens[token]
 		if !found || !ok {
 			http.Error(w, "unauthorized", http.StatusUnauthorized)
-			return
+			// return
 		}
 		ctx := context.WithValue(r.Context(), ctxKey{}, user)
 		next(w, r.WithContext(ctx))
