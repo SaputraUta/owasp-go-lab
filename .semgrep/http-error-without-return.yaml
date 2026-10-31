@@ -1,0 +1,14 @@
+rules:
+  - id: http-error-without-return
+    languages: [go]
+    severity: ERROR
+    message: http.Error writes the response but does not stop the handler. Add `return` right after it.
+    patterns:
+      - pattern-inside: |
+          if $COND {
+            ...
+          }
+      - pattern: http.Error(...)
+      - pattern-not-inside: |
+          http.Error(...)
+          return
