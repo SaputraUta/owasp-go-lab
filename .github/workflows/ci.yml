@@ -33,3 +33,11 @@ jobs:
         with:
           go-version-file: go.mod
       - run: go run github.com/securego/gosec/v2/cmd/gosec@v2.30.0 -severity medium ./...
+
+  trivy-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: >
+          docker run --rm -v "$PWD:/src" aquasec/trivy:0.76.1
+          config --severity MEDIUM,HIGH,CRITICAL --exit-code 1 /src
