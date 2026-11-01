@@ -54,4 +54,4 @@ jobs:
   hello:
     runs-on: ubuntu-latest
     steps:
-      - uses: SaputraUta/hello-action@v1
+      - uses: SaputraUta/hello-action@4d8eefa8d8a13276e68a02027444be937089f88a #v1
