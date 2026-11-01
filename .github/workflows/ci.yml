@@ -50,3 +50,8 @@ jobs:
         with:
           go-version-file: go.mod
       - run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
+
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: SaputraUta/hello-action@v1
