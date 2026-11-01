@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: "0 1 * * 1"
 
 permissions:
   contents: read
@@ -12,8 +14,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
       - run: go test ./... -v
@@ -22,14 +26,18 @@ jobs:
     runs-on: ubuntu-latest
     container: semgrep/semgrep:1.182.0
     steps:
-      - uses: actions/checkout@v4
-      - run:  semgrep scan --config .semgrep/ --error --metrics=off
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - run: semgrep scan --config .semgrep/ --error --metrics=off
 
   gosec:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
       - run: go run github.com/securego/gosec/v2/cmd/gosec@v2.30.0 -severity medium ./...
@@ -37,7 +45,9 @@ jobs:
   trivy-config:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - run: >
           docker run --rm -v "$PWD:/src" aquasec/trivy:0.76.1
           config --severity MEDIUM,HIGH,CRITICAL --exit-code 1 /src
@@ -45,13 +55,23 @@ jobs:
   govulncheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
       - run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
 
+  zizmor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - run: pipx run zizmor==1.31.1 --offline .github/workflows
+
   hello:
     runs-on: ubuntu-latest
     steps:
-      - uses: SaputraUta/hello-action@4d8eefa8d8a13276e68a02027444be937089f88a #v1
+      - uses: SaputraUta/hello-action@4d8eefa8d8a13276e68a02027444be937089f88a # v1
