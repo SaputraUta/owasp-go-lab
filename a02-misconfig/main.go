@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 func main() {
@@ -17,6 +18,14 @@ func main() {
 		w.Write([]byte("ok \n"))
 	})
 
+	srv := &http.Server{
+		Addr:              ":8081",
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      10 * time.Second,
+		IdleTimeout:       60 * time.Second,
+	}
+
 	log.Println("listening on :8081")
-	log.Fatal(http.ListenAndServe(":8081", mux))
+	log.Fatal(srv.ListenAndServe())
 }
