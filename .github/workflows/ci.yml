@@ -41,3 +41,12 @@ jobs:
       - run: >
           docker run --rm -v "$PWD:/src" aquasec/trivy:0.76.1
           config --severity MEDIUM,HIGH,CRITICAL --exit-code 1 /src
+
+  govulncheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
