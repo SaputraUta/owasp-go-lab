@@ -1,5 +1,5 @@
 module owasp-go-lab
 
-go 1.26.1
+go 1.26.10
 
-require golang.org/x/text v0.3.7
+require golang.org/x/text v0.43.0
