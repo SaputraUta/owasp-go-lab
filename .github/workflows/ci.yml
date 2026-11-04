@@ -70,6 +70,17 @@ jobs:
         with:
           persist-credentials: false
       - run: pipx run zizmor==1.31.1 --offline .github/workflows
+  
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - run: >
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1
+          git --no-banner /repo
 
   hello:
     runs-on: ubuntu-latest
