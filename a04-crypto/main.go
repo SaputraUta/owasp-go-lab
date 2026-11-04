@@ -1,27 +1,45 @@
 package main
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"fmt"
+	"log"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
-var users = map[string]string{}
+var users = map[string][]byte{}
 
-func hashPassword(pw string) string {
-	sum := md5.Sum([]byte(pw))
-	return hex.EncodeToString(sum[:])
+func register(name, pw string) error {
+	h, err := bcrypt.GenerateFromPassword([]byte(pw), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	users[name] = h
+	return nil
 }
 
-func register(name, pw string) {
-	users[name] = hashPassword(pw)
+func login(name, pw string) bool {
+	h, ok := users[name]
+	if !ok {
+		return false
+	}
+	return bcrypt.CompareHashAndPassword(h, []byte(pw)) == nil
 }
 
 func main() {
-	register("alice", "summer2026")
-	register("bob", "summer2026")
-	register("carol", "correct-horse-battery")
-	for name, h := range users {
-		fmt.Println(name, h)
+	seed := map[string]string{
+		"alice": "summer2026",
+		"bob":   "summer2026",
+		"carol": "correct-horse-battery",
 	}
+	for name, pw := range seed {
+		if err := register(name, pw); err != nil {
+			log.Fatal(err)
+		}
+	}
+	for name, h := range users {
+		fmt.Println(name, string(h))
+	}
+	fmt.Println("alice, right password:", login("alice", "summer2026"))
+	fmt.Println("alice, wrong password:", login("alice", "winter2026"))
 }
