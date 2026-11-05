@@ -9,11 +9,11 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-func main() {
+func initDB() error {
 	var err error
 	db, err = sql.Open("sqlite", ":memory:")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	db.SetMaxOpenConns(1)
 	_, err = db.Exec(`
@@ -23,7 +23,11 @@ func main() {
 			('Teh Melati', 'tea', 1),
 			('Kopi Rahasia 2027', 'coffee', 0);
 	`)
-	if err != nil {
+	return err
+}
+
+func main() {
+	if err := initDB(); err != nil {
 		log.Fatal(err)
 	}
 
