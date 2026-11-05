@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -16,8 +15,7 @@ var db *sql.DB
 
 func listProducts(w http.ResponseWriter, r *http.Request) {
 	category := r.URL.Query().Get("category")
-	query := fmt.Sprintf("SELECT name, category FROM products WHERE released = 1 AND category = '%s'", category)
-	rows, err := db.Query(query)
+	rows, err := db.Query("SELECT name, category FROM products WHERE released = 1 AND category = ?", category)
 	if err != nil {
 		http.Error(w, "query failed", http.StatusInternalServerError)
 		return
