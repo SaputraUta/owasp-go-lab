@@ -89,6 +89,9 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -97,7 +100,13 @@ jobs:
         with:
           go-version-file: go.mod
       - run: CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -o a08-server ./a08-integrity
+      - uses: sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532
+        with:
+          cosign-release: v3.1.4
+      - run: cosign sign-blob --yes --bundle a08-server.sigstore.json a08-server
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: a08-server
-          path: a08-server
+          path: |
+            a08-server
+            a08-server.sigstore.json
